@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+# this file is (mostly) adapt from Tensorflow source code
 from __future__ import print_function
 from functools import reduce
 import numpy

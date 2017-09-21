@@ -11,9 +11,13 @@ from tensorflow.contrib.learn.python.learn.datasets import base
 from .dataset import DataSet, dense_to_one_hot
 from .cs231n.data_utils import load_CIFAR10
 
-__all__ = ["read_data_sets"]
+__all__ = ["read_data_sets", "get_class_names", "onehot_to_names"]
 
-SOURCE_URL = "http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
+_SOURCE_URL = "http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
+_LABELS_MAP = {0: 'plane', 1: 'car', 2: 'bird',
+               3: 'cat', 4: 'deer', 5: 'dog',
+               6: 'frog', 7: 'horse', 8: 'ship',
+               9: 'truck'}
 
 
 def read_data_sets(work_dir,
@@ -45,7 +49,7 @@ def read_data_sets(work_dir,
         print("Trying to download cifar data (if the tar.gz file is not available)")
         gz_fpath = base.maybe_download("cifar-10-python.tar.gz",
                                        work_dir,
-                                       SOURCE_URL)
+                                       _SOURCE_URL)
         print("Extracting data in {}".format(root_data_dir))
         with tarfile.open(gz_fpath) as tar:
             tar.extractall(work_dir)
@@ -85,3 +89,12 @@ def read_data_sets(work_dir,
     return base.Datasets(train=train_dataset,
                          validation=valid_dataset,
                          test=test_dataset)
+
+
+def get_class_names(labels):
+    return np.vectorize(_LABELS_MAP.get)(labels)
+
+
+def onehot_to_names(one_hot):
+    labels = np.argmax(one_hot, axis=1)
+    return get_class_names(labels)
